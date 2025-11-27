@@ -64,7 +64,7 @@ export default function Footer() {
                             যোগাযোগ
                         </h4>
                         <p className="text-sm text-white/90 font-bangla">
-                            ইমেইল: campaign@ahadshikdar.bd
+                            ইমেইল: campaign@ahadshikder.bd
                         </p>
 
                         <div className="flex space-x-4 mt-4">

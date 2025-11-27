@@ -77,7 +77,7 @@ const HeroSection = ({ onChangePage, currentPage }) => {
                         </div>
                     </div>
 
-                    {/* RIGHT: AUTHOR IMAGE - Updated style: dynamic size, rounded corners, slight rotation */}
+                    {/* RIGHT: AUTHOR IMAGE */}
                     <div className="flex-shrink-0 flex justify-center md:justify-end">
                         <div className="relative w-64 h-72 sm:w-72 sm:h-80 lg:w-80 lg:h-96 bg-white/10 rounded-[4rem] p-2 shadow-2xl transform rotate-1 transition duration-500 hover:rotate-0 hover:scale-[1.02]">
 
@@ -86,13 +86,10 @@ const HeroSection = ({ onChangePage, currentPage }) => {
 
                             {/* The actual image container (tighter rounded edges) */}
                             <div className="relative w-full h-full rounded-3xl overflow-hidden border-4 border-white shadow-inner z-10">
-                                {/* Using a standard div fallback for the image */}
                                 <div
                                     className="w-full h-full bg-cover bg-center"
                                     style={{
-                                        // Placeholder with colors matching the theme
                                         backgroundImage: 'url(https://i.postimg.cc/RZv3dLtR/aha-da-sa-kada-ra.png)',
-                                        // Original image URL: 'url(https://i.postimg.cc/RZv3dLtR/aha-da-sa-kada-ra.png)',
                                         backgroundSize: 'cover'
                                     }}
                                     aria-label="মোঃ আহাদ শিকদার"
@@ -105,7 +102,7 @@ const HeroSection = ({ onChangePage, currentPage }) => {
                 </div>
             </div>
 
-            {/* HERO STATS - Grid layout for metrics */}
+            {/* HERO STATS */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((stat, index) => (
                     <StatCard key={index} value={stat.value} label={stat.label} />
@@ -115,16 +112,16 @@ const HeroSection = ({ onChangePage, currentPage }) => {
             {/* NCP SECTION - Dedicated block for party information */}
             <div className="mt-12 p-8 rounded-2xl shadow-xl bg-white border-l-8 border-[#026B32] transition duration-300 hover:shadow-2xl">
                 <h3 className="text-3xl font-bold mb-4 text-[#026B32] flex items-center gap-2">
-                    <Users size={28} className="text-[#DD2527]" /> নিউ সিটিজেনস পার্টি (NCP)
+                    <Users size={28} className="text-[#DD2527]" /> জাতীয় নাগরিক পার্টি (NCP)
                 </h3>
                 <p className="text-gray-700 leading-relaxed text-lg mb-4">
-                    NCP – নিউ সিটিজেনস পার্টি এমন এক রাজনৈতিক সংগঠন, যা নবপ্রজন্মের
+                    NCP –জাতীয় নাগরিক পার্টি এমন এক রাজনৈতিক সংগঠন, যা নবপ্রজন্মের
                     নেতৃত্ব, স্বচ্ছতা এবং সামাজিক দায়বদ্ধতার মাধ্যমে জাতিকে এগিয়ে নিতে
                     চায়। আমাদের মূলমন্ত্র হলো স্থানীয় উন্নয়নে জনগণের অংশগ্রহণ নিশ্চিত করা।
                 </p>
                 <button
                     className="mt-2 px-6 py-2 text-sm rounded-full font-semibold bg-[#026B32] text-white hover:bg-[#DD2527] transition duration-300 ease-in-out transform hover:scale-[1.03]"
-                    onClick={() => console.log("NCP Manifesto Clicked")} // Placeholder action
+                    onClick={() => console.log("NCP Manifesto Clicked")}
                 >
                     NCP ইশতেহার পড়ুন
                 </button>
@@ -133,42 +130,4 @@ const HeroSection = ({ onChangePage, currentPage }) => {
     );
 };
 
-// Main App Component
-export default function App() {
-    // State to manage the current visible page/section (for onChangePage simulation)
-    const [currentPage, setCurrentPage] = useState('home');
-
-    // Simple Header/Navigation for context (kept for footer and state logic)
-    const navItems = [
-        { key: 'home', label: 'হোম', icon: Home },
-        { key: 'roles', label: 'কার্যক্রম', icon: Briefcase },
-        { key: 'initiatives', label: 'উদ্যোগ', icon: Zap },
-        { key: 'contact', label: 'যোগাযোগ', icon: Mail }
-    ];
-
-    const changePage = (pageKey) => {
-        setCurrentPage(pageKey);
-        // In a real application, this would trigger navigation
-        console.log(`Navigating to: ${pageKey}`);
-    };
-
-    return (
-        // Global wrapper with Inter font (supports Bangla) and a light background
-        <div className="min-h-screen bg-gray-100 p-4 md:p-8 lg:p-12 antialiased">
-            {/* Tailwind utility classes loaded via CDN in the canvas environment */}
-
-            {/* The Top Navigation Bar has been removed as per user request. */}
-
-            {/* The enhanced Hero Section */}
-            <HeroSection onChangePage={changePage} currentPage={currentPage} />
-
-            {/* Footer / Status Indicator */}
-            <footer className="mt-16 pt-6 border-t border-gray-300 text-center text-sm text-gray-600">
-                <p>
-                    বর্তমান নির্বাচিত বিভাগ: <span className="font-bold text-[#026B32]">{navItems.find(i => i.key === currentPage)?.label || 'হোম'}</span>
-                </p>
-                <p className="mt-2 text-xs">ডিজাইন এবং উন্নয়নের প্রতিশ্রুতির সাথে নির্মিত।</p>
-            </footer>
-        </div>
-    );
-}
+export default HeroSection;
