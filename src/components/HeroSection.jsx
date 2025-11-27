@@ -103,11 +103,11 @@ const HeroSection = ({ onChangePage, currentPage }) => {
             </div>
 
             {/* HERO STATS */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((stat, index) => (
                     <StatCard key={index} value={stat.value} label={stat.label} />
                 ))}
-            </div>
+            </div> */}
 
             {/* NCP SECTION - Dedicated block for party information */}
             <div className="mt-12 p-8 rounded-2xl shadow-xl bg-white border-l-8 border-[#026B32] transition duration-300 hover:shadow-2xl">
