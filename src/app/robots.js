@@ -1,7 +1,3 @@
-// app/robots.js
-// Next.js 15 — এই ফাইলটাও app/ root-এ রাখুন
-// automatically /robots.txt route তৈরি হবে
-
 export default function robots() {
     return {
         rules: [
