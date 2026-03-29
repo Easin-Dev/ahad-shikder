@@ -1,130 +1,182 @@
 "use client";
-import React, { useState } from 'react';
-import { Home, Menu, X, Globe, User, Image, Rss, Phone, Zap } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import {
+    Home, Menu, X, User, Image, Rss, Phone, Zap, Users, ChevronRight
+} from 'lucide-react';
 
-// --- COLOR CONSTANTS ---
-// Green (#026B32) - Primary
+/**
+ * @note 
+ * I have updated the code to be more compatible with the preview environment.
+ * For a real Next.js project, you can simply replace the <a> tags with <Link> 
+ * and use `usePathname()` from 'next/navigation' for active state detection.
+ */
+
+// --- COLORS ---
 const NCP_GREEN = "#026B32";
-// Red (#DD2527) - Accent
 const NCP_RED = "#DD2527";
 
 // --- NAVIGATION ITEMS ---
-// Each item now includes a 'path' property for routing clarity
 const NAV_ITEMS = [
     { id: "home", label: "হোম", path: "/", icon: Home },
     { id: "about", label: "আমার কথা", path: "/about", icon: User },
-    { id: "roles", label: "সাংগঠনিক ভূমিকা", path: "/roles", icon: Globe },
+    { id: "roles", label: "সাংগঠনিক ভূমিকা", path: "/roles", icon: Users },
     { id: "initiatives", label: "উদ্যোগ", path: "/initiatives", icon: Zap },
     { id: "gallery", label: "গ্যালারি", path: "/gallery", icon: Image },
-    { id: "blog", label: "সংবাদ", path: "/blog", icon: Rss },
     { id: "contact", label: "যোগাযোগ", path: "/contact", icon: Phone },
 ];
 
-// --- NAVBAR COMPONENT ---
-// This component displays the navigation bar, manages mobile menu state,
-// and highlights the active page.
-export default function AppNavbar({ activePage = "home", onChangePage }) {
-    const [mobileOpen, setMobileOpen] = useState(false);
+export default function AppNavbar() {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    // Manual active state for preview purposes
+    const [activePath, setActivePath] = useState("/");
 
-    // Handles navigation clicks and closes the mobile menu
-    const handleNavClick = (pageId) => {
-        if (onChangePage) onChangePage(pageId);
-        setMobileOpen(false);
+    // Scroll logic for glassmorphism effect
+    useEffect(() => {
+        const handleScroll = () => setScrolled(window.scrollY > 20);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Handler for navigation
+    const handleNavigate = (path) => {
+        setActivePath(path);
+        setIsMenuOpen(false);
     };
 
     return (
         <>
-            {/* Desktop and Mobile Header */}
-            <header className="sticky top-0 z-50 shadow-lg bg-white border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-lg shadow-sm py-2' : 'bg-transparent py-4'
+                }`}>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
 
-                    {/* === LOGO + NAME (Always Visible) === */}
-                    {/* লোগোতে ক্লিক করলে হোমে নেভিগেট হবে */}
-                    <div className="flex items-center space-x-3 cursor-pointer" onClick={() => handleNavClick("home")}>
-
-                        {/* LOGO Placeholder */}
-                        <img
-                            src="https://i.postimg.cc/J0CvJnFz/ja-ta-ya-na-gara-ka-pa-ra-ta-ra-la-ga.jpg"
-                            alt="Ahad Shikdar Logo"
-                            className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md"
-                        />
-
-                        {/* NAME */}
-                        <h1 className="text-xl font-extrabold text-green-700">
-                            আহাদ শিকদার
-                        </h1>
+                    {/* --- LOGO SECTION --- */}
+                    <div
+                        onClick={() => handleNavigate("/")}
+                        className="flex items-center gap-3 group cursor-pointer"
+                    >
+                        <div className="relative">
+                            <img
+                                src="https://i.postimg.cc/J0CvJnFz/ja-ta-ya-na-gara-ka-pa-ra-ta-ra-la-ga.jpg"
+                                alt="NCP Logo"
+                                className="w-10 h-10 md:w-11 md:h-11 rounded-full border-2 border-[#026B32] group-hover:scale-105 transition-transform"
+                            />
+                            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[#DD2527] rounded-full border-2 border-white" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-xl md:text-2xl font-black leading-none text-[#026B32]">
+                                আহাদ শিকদার
+                            </span>
+                            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-500">Jhalokati-1</span>
+                        </div>
                     </div>
 
-                    {/* Desktop Navigation Links (Hidden on mobile) */}
-                    <nav className="hidden md:flex space-x-6">
-                        {NAV_ITEMS.map((item) => (
-                            <a // <a> ট্যাগ ব্যবহার করা হয়েছে
-                                key={item.id}
-                                href={item.path} // পাথের জন্য href যোগ করা হয়েছে
-                                className={`nav-link font-semibold transition duration-200 pb-1 relative group cursor-pointer
-                                    ${activePage === item.id
-                                        ? `text-[${NCP_RED}] font-bold`
-                                        : `text-gray-700 hover:text-[${NCP_RED}]`
-                                    }`}
-                                onClick={() => { // e.preventDefault() সরিয়ে দেওয়া হয়েছে যাতে ব্রাউজার স্বাভাবিকভাবে নেভিগেট করতে পারে
-                                    handleNavClick(item.id);
-                                }}
-                            >
-                                {item.label}
-                                {/* Active Link Underline Effect */}
-                                <span className={`absolute bottom-0 left-0 h-0.5 bg-[${NCP_RED}] transition-all duration-300 ${activePage === item.id ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
-                            </a>
-                        ))}
-                    </nav>
+                    {/* --- DESKTOP MENU --- */}
+                    <div className="hidden md:flex items-center gap-1">
+                        {NAV_ITEMS.map((item) => {
+                            const isActive = activePath === item.path;
+                            return (
+                                <button
+                                    key={item.id}
+                                    onClick={() => handleNavigate(item.path)}
+                                    className={`px-4 py-2 rounded-full text-sm font-bold transition-all relative group ${isActive ? 'text-[#026B32]' : 'text-gray-600 hover:text-[#026B32]'
+                                        }`}
+                                >
+                                    {item.label}
+                                    {isActive && (
+                                        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[#DD2527] rounded-full" />
+                                    )}
+                                    {/* Hover underline */}
+                                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#026B32] transition-all group-hover:w-4" />
+                                </button>
+                            );
+                        })}
+                    </div>
 
-                    {/* Mobile Menu Open Button (Visible on mobile) */}
+                    {/* --- ACTION BUTTON --- */}
+                    <div className="hidden md:block">
+                        <button
+                            onClick={() => handleNavigate("/contact")}
+                            className="flex items-center gap-2 bg-[#026B32] text-white px-6 py-2.5 rounded-full font-bold shadow-md hover:bg-[#DD2527] transition-all transform hover:scale-105 active:scale-95"
+                        >
+                            <Phone size={16} />
+                            সরাসরি কল
+                        </button>
+                    </div>
+
+                    {/* --- MOBILE TOGGLE --- */}
                     <button
-                        className="md:hidden text-gray-700 hover:text-green-700 p-2 rounded-lg transition cursor-pointer"
-                        onClick={() => setMobileOpen(true)}
+                        className="md:hidden p-2 rounded-xl bg-[#026B32]/10 text-[#026B32] transition-colors hover:bg-[#026B32]/20"
+                        onClick={() => setIsMenuOpen(true)}
+                        aria-label="Open Menu"
                     >
-                        <Menu className="w-6 h-6" />
+                        <Menu size={24} />
                     </button>
                 </div>
-            </header>
+            </nav>
 
-            {/* Mobile Menu Drawer (Slides in from the right) */}
-            <div
-                className={`md:hidden fixed inset-0 z-[60] bg-white/95 backdrop-blur-sm p-6 transform transition duration-300 ease-in-out ${mobileOpen ? "translate-x-0" : "translate-x-full"
-                    }`}
-            >
-                <div className="flex justify-end">
-                    {/* Mobile Menu Close Button */}
-                    <button
-                        className="text-gray-700 hover:text-red-600 p-2 rounded-full border border-gray-300 cursor-pointer"
-                        onClick={() => setMobileOpen(false)}
-                    >
-                        <X className="w-6 h-6" />
-                    </button>
+            {/* --- MOBILE DRAWER --- */}
+            <div className={`fixed inset-0 z-[110] transition-all duration-500 ${isMenuOpen ? 'visible' : 'invisible'}`}>
+                {/* Backdrop */}
+                <div
+                    className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-500 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+                    onClick={() => setIsMenuOpen(false)}
+                />
+
+                {/* Drawer Content */}
+                <div className={`absolute right-0 top-0 bottom-0 w-[85%] max-w-sm bg-white shadow-2xl transition-transform duration-500 p-6 flex flex-col ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+                    }`}>
+                    <div className="flex justify-between items-center mb-10">
+                        <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-full bg-[#026B32] flex items-center justify-center text-white font-bold text-xs">AS</div>
+                            <span className="text-lg font-black text-gray-800">মেনু নেভিগেশন</span>
+                        </div>
+                        <button
+                            onClick={() => setIsMenuOpen(false)}
+                            className="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors"
+                        >
+                            <X size={20} />
+                        </button>
+                    </div>
+
+                    <div className="space-y-2 flex-1">
+                        {NAV_ITEMS.map((item) => {
+                            const isActive = activePath === item.path;
+                            const Icon = item.icon;
+                            return (
+                                <button
+                                    key={item.id}
+                                    onClick={() => handleNavigate(item.path)}
+                                    className={`flex items-center justify-between w-full p-4 rounded-2xl font-bold transition-all text-left ${isActive
+                                            ? 'bg-[#026B32] text-white shadow-lg translate-x-1'
+                                            : 'hover:bg-gray-50 text-gray-700'
+                                        }`}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <Icon size={20} className={isActive ? 'text-white' : 'text-[#026B32]'} />
+                                        <span>{item.label}</span>
+                                    </div>
+                                    <ChevronRight size={16} className={isActive ? 'opacity-100' : 'opacity-30'} />
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Mobile Footer Area */}
+                    <div className="mt-auto pt-6 border-t border-gray-100">
+                        <button
+                            onClick={() => handleNavigate("/join")}
+                            className="w-full bg-[#DD2527] text-white py-4 rounded-2xl font-bold shadow-lg flex items-center justify-center gap-2 mb-6"
+                        >
+                            পার্টিতে যোগ দিন
+                        </button>
+                        <div className="flex justify-center gap-6 text-gray-400">
+                            <span className="hover:text-[#026B32] transition-colors cursor-pointer"><Users size={20} /></span>
+                            <span className="hover:text-[#026B32] transition-colors cursor-pointer"><Rss size={20} /></span>
+                            <span className="hover:text-[#026B32] transition-colors cursor-pointer"><Phone size={20} /></span>
+                        </div>
+                    </div>
                 </div>
-
-                {/* Mobile Navigation Links */}
-                <nav className="flex flex-col space-y-6 mt-12">
-                    {NAV_ITEMS.map((item) => {
-                        const Icon = item.icon;
-                        return (
-                            <a // <a> ট্যাগ ব্যবহার করা হয়েছে
-                                key={item.id}
-                                href={item.path} // পাথের জন্য href যোগ করা হয়েছে
-                                className={`flex items-center gap-4 py-3 px-4 rounded-xl text-left transition duration-200 cursor-pointer
-                                    ${activePage === item.id
-                                        ? `bg-[${NCP_RED}] text-white shadow-lg`
-                                        : `text-gray-800 hover:bg-gray-100`
-                                    }`}
-                                onClick={() => { // e.preventDefault() সরিয়ে দেওয়া হয়েছে যাতে ব্রাউজার স্বাভাবিকভাবে নেভিগেট করতে পারে
-                                    handleNavClick(item.id);
-                                }}
-                            >
-                                <Icon size={24} className={activePage === item.id ? 'text-white' : `text-[${NCP_GREEN}]`} />
-                                <span className="text-xl font-bold">{item.label}</span>
-                            </a>
-                        );
-                    })}
-                </nav>
             </div>
         </>
     );
