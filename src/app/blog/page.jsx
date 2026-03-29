@@ -42,7 +42,7 @@ const NEWS_ITEMS = [
 // "use client" is required for this component
 export default function NewsSection() {
     return (
-        <section id="blog" className="py-16 bg-gray-50/50 min-h-screen">
+        <section id="blog" className="py-16 bg-gray-50/50 min-h-screen mt-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Section Header */}
                 <h2 className={`text-5xl font-extrabold text-center text-gray-800 mb-12 border-b-4 border-[${NCP_RED}] pb-4 font-bangla`}>

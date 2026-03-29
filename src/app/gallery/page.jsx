@@ -66,7 +66,7 @@ export default function GallerySection() {
       : PHOTOS.filter((p) => p.category === activeCategory);
     
   return (
-    <section id="gallery" className="py-16 bg-white min-h-screen">
+    <section id="gallery" className="py-16 bg-white min-h-screen mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {/* Section Header */}
