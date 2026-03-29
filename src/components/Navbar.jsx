@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import {
-    Home, Menu, X, User, Image, Rss, Phone, Zap, Users, ChevronRight
+    Home, Menu, X, User, Image, Rss, Phone, Zap, Users, ChevronRight, ListChecks
 } from 'lucide-react';
 
 // --- COLORS ---
@@ -15,33 +15,31 @@ const NAV_ITEMS = [
     { id: "about", label: "আমার কথা", path: "/about", icon: User },
     { id: "roles", label: "সাংগঠনিক ভূমিকা", path: "/roles", icon: Users },
     { id: "initiatives", label: "উদ্যোগ", path: "/initiatives", icon: Zap },
+    { id: "15dofa", label: "১৫ দফা অঙ্গীকার", path: "/15dofa", icon: ListChecks },
     { id: "gallery", label: "গ্যালারি", path: "/gallery", icon: Image },
     { id: "contact", label: "যোগাযোগ", path: "/contact", icon: Phone },
 ];
 
 export default function AppNavbar() {
     const router = useRouter();
-    const pathname = usePathname();          // ← Next.js থেকে সরাসরি active path
+    const pathname = usePathname();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
 
-    // Scroll → glassmorphism effect
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Mobile drawer খোলা থাকলে body scroll বন্ধ
     useEffect(() => {
         document.body.style.overflow = isMenuOpen ? 'hidden' : '';
         return () => { document.body.style.overflow = ''; };
     }, [isMenuOpen]);
 
-    // নেভিগেট করার একমাত্র ফাংশন
     const handleNavigate = (path) => {
-        router.push(path);      // ← Next.js router — actual page render হবে
+        router.push(path);
         setIsMenuOpen(false);
     };
 
@@ -49,8 +47,8 @@ export default function AppNavbar() {
         <>
             <nav
                 className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${scrolled
-                        ? 'bg-white/80 backdrop-blur-lg shadow-sm py-2'
-                        : 'bg-transparent py-4'
+                    ? 'bg-white/80 backdrop-blur-lg shadow-sm py-2'
+                    : 'bg-transparent py-4'
                     }`}
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
@@ -82,24 +80,37 @@ export default function AppNavbar() {
                     <div className="hidden md:flex items-center gap-1">
                         {NAV_ITEMS.map((item) => {
                             const isActive = pathname === item.path;
+                            const is15dofa = item.id === "15dofa";
                             return (
                                 <button
                                     key={item.id}
                                     onClick={() => handleNavigate(item.path)}
-                                    className={`px-4 py-2 rounded-full text-sm font-bold transition-all relative group cursor-pointer outline-none ${isActive
-                                            ? 'text-[#026B32]'
-                                            : 'text-gray-600 hover:text-[#026B32]'
+                                    className={`px-4 py-2 rounded-full text-sm font-bold transition-all relative group cursor-pointer outline-none ${is15dofa
+                                            ? isActive
+                                                ? 'bg-[#DD2527] text-white shadow-md'
+                                                : 'bg-[#DD2527]/10 text-[#DD2527] hover:bg-[#DD2527] hover:text-white'
+                                            : isActive
+                                                ? 'text-[#026B32]'
+                                                : 'text-gray-600 hover:text-[#026B32]'
                                         }`}
                                 >
-                                    {item.label}
+                                    {is15dofa && (
+                                        <span className="inline-flex items-center gap-1.5">
+                                            <ListChecks size={14} />
+                                            {item.label}
+                                        </span>
+                                    )}
+                                    {!is15dofa && item.label}
 
-                                    {/* Active dot */}
-                                    {isActive && (
+                                    {/* Active dot — শুধু normal items-এ */}
+                                    {isActive && !is15dofa && (
                                         <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[#DD2527] rounded-full" />
                                     )}
 
                                     {/* Hover underline */}
-                                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#026B32] transition-all group-hover:w-4" />
+                                    {!is15dofa && (
+                                        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#026B32] transition-all group-hover:w-4" />
+                                    )}
                                 </button>
                             );
                         })}
@@ -165,17 +176,26 @@ export default function AppNavbar() {
                         {NAV_ITEMS.map((item) => {
                             const isActive = pathname === item.path;
                             const Icon = item.icon;
+                            const is15dofa = item.id === "15dofa";
                             return (
                                 <button
                                     key={item.id}
                                     onClick={() => handleNavigate(item.path)}
-                                    className={`flex items-center justify-between w-full p-4 rounded-2xl font-bold transition-all text-left cursor-pointer outline-none ${isActive
-                                            ? 'bg-[#026B32] text-white shadow-lg translate-x-1'
-                                            : 'hover:bg-gray-50 text-gray-700'
+                                    className={`flex items-center justify-between w-full p-4 rounded-2xl font-bold transition-all text-left cursor-pointer outline-none ${is15dofa
+                                            ? isActive
+                                                ? 'bg-[#DD2527] text-white shadow-lg translate-x-1'
+                                                : 'bg-[#DD2527]/10 text-[#DD2527] hover:bg-[#DD2527] hover:text-white'
+                                            : isActive
+                                                ? 'bg-[#026B32] text-white shadow-lg translate-x-1'
+                                                : 'hover:bg-gray-50 text-gray-700'
                                         }`}
                                 >
                                     <div className="flex items-center gap-4">
-                                        <Icon size={20} className={isActive ? 'text-white' : 'text-[#026B32]'} />
+                                        <Icon size={20} className={
+                                            is15dofa
+                                                ? (isActive ? 'text-white' : 'text-[#DD2527]')
+                                                : (isActive ? 'text-white' : 'text-[#026B32]')
+                                        } />
                                         <span>{item.label}</span>
                                     </div>
                                     <ChevronRight size={16} className={isActive ? 'opacity-100' : 'opacity-30'} />
